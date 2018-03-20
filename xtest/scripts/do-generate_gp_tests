@@ -1,0 +1,101 @@
+#!/bin/sh
+
+XTEST_DIR=$1
+SCRIPTS_DIR=$XTEST_DIR/scripts
+TEE_DIR=$1/../../../../../tee/mips-lk
+TEE_XTEST_DIR=$TEE_DIR/app/xtest
+TEE_TTA_FOLDER=TTAs_Internal_API_1_1_1
+TEE_TTA_DIR=$TEE_XTEST_DIR/$TEE_TTA_FOLDER
+PATCH_DIR=$XTEST_DIR/patches/TTA
+
+XML_PARSER=xalan
+if ! command -v $XML_PARSER >/dev/null 2>&1 ; then
+XML_PARSER=xsltproc
+command -v $XML_PARSER >/dev/null 2>&1 || { echo >&2 "No supported xml parser found. xalan or xsltproc are required. Aborting."; exit 1; }
+fi
+
+if [ -z ${TEST_SUITE_DIR+x} ]; then
+	echo "Please export TEST_SUITE_DIR variable with path to Global Platform Test Suite bundle.";
+	exit 1;
+fi
+
+TEST_SUITE_TTA_DIR=$TEST_SUITE_DIR/$TEE_TTA_FOLDER
+
+parse_xml()
+{
+	IN_FILE=$SCRIPTS_DIR/$1
+	XSL_FILE=$SCRIPTS_DIR/$2
+	OUT_FILE=$XTEST_DIR/$3
+	if expr $XML_PARSER = xalan >/dev/null 2>&1 ; then
+		$XML_PARSER -in $IN_FILE -xsl $XSL_FILE -out $OUT_FILE ;
+	else
+		$XML_PARSER $XSL_FILE $IN_FILE > $OUT_FILE ;
+	fi
+}
+
+generate_test_cases()
+{
+	cp $TEST_SUITE_DIR/packages/ClientAPI/xmlstable/TEE.xml $SCRIPTS_DIR
+	cp $TEST_SUITE_DIR/packages/Time_Arithmetical/xmlstable/TEE_TimeArithm_API.xml $SCRIPTS_DIR
+	cp $TEST_SUITE_DIR/packages/TrustedCoreFw/xmlstable/TEE_Internal_API.xml $SCRIPTS_DIR
+	cp $TEST_SUITE_DIR/packages/Crypto/xmlstable/TEE_Crypto_API.xml $SCRIPTS_DIR
+	cp $TEST_SUITE_DIR/packages/DataStorage/xmlstable/TEE_DataStorage_API.xml $SCRIPTS_DIR
+	parse_xml TEE.xml adbg_case_declare.xsl adbg_case_declare.h
+	parse_xml TEE.xml adbg_entry_declare.xsl adbg_entry_declare.h
+	parse_xml TEE.xml disable_auto_generated_tests.xsl disable_auto_generated_tests.h
+	parse_xml TEE.xml TEE.xsl xtest_70000.c
+	parse_xml TEE_DataStorage_API.xml TEE_DataStorage_API.xsl xtest_75000.c
+	parse_xml TEE_Internal_API.xml TEE_Internal_API.xsl xtest_80000.c
+	parse_xml TEE_TimeArithm_API.xml TEE_TimeArithm_API.xsl xtest_85000.c
+	parse_xml TEE_Crypto_API.xml TEE_Crypto_API.xsl xtest_90000.c
+	rm -rf $SCRIPTS_DIR/TEE.xml $SCRIPTS_DIR/TEE_Internal_API.xml $SCRIPTS_DIR/TEE_TimeArithm_API.xml
+}
+
+patch_dir()
+{
+	DST_DIR=$1
+	PATCH_FILE=$2
+	cp $PATCH_DIR/$PATCH_FILE $DST_DIR
+	cd $DST_DIR
+	patch -N --binary -p0 < $PATCH_FILE
+	rm $PATCH_FILE
+	cd -
+}
+
+generate_tee_xtest()
+{
+	generate_test_cases
+	rsync -au --chmod=u=rwX,go=rX $TEST_SUITE_TTA_DIR $TEE_XTEST_DIR
+	rm -f $TEE_TTA_DIR/TEE_include/tee_internal_api.h
+	cp -f $TEE_TTA_DIR/TTA_DS/TTA_DS/code_files/TTA_DS_commands.c $TEE_TTA_DIR/TTA_Crypto/TTA_Crypto/code_files
+	chmod -R +w $TEE_TTA_DIR
+	patch_dir $TEE_TTA_DIR TEE_Include.patch
+	patch_dir $TEE_TTA_DIR/TTA_ClientAPI TTA_answerErrorTo_Invoke.patch
+	patch_dir $TEE_TTA_DIR/TTA_ClientAPI TTA_answerErrorTo_OpenSession.patch
+	patch_dir $TEE_TTA_DIR/TTA_ClientAPI TTA_answerSuccessTo_OpenSession_Invoke.patch
+	patch_dir $TEE_TTA_DIR/TTA_ClientAPI TTA_testingClientAPI.patch
+	patch_dir $TEE_TTA_DIR/TTA_ClientAPI TTA_testingClientAPI_Parameters.patch
+	patch_dir $TEE_TTA_DIR/TTA_TCF TTA_TCF.patch
+	patch_dir $TEE_TTA_DIR/TTA_TCF TTA_TCF_ICA.patch
+	patch_dir $TEE_TTA_DIR/TTA_TCF TTA_TCF_ICA2.patch
+	patch_dir $TEE_TTA_DIR/TTA_TCF TTA_TCF_MultipleInstanceTA.patch
+	patch_dir $TEE_TTA_DIR/TTA_TCF TTA_TCF_PanicAtCloseSession.patch
+	patch_dir $TEE_TTA_DIR/TTA_TCF TTA_TCF_PanicAtCreation.patch
+	patch_dir $TEE_TTA_DIR/TTA_TCF TTA_TCF_SingleInstanceTA.patch
+	patch_dir $TEE_TTA_DIR/TTA_Time TTA_Time.patch
+	patch_dir $TEE_TTA_DIR/TTA_Arithmetical TTA_Arithmetical.patch
+	patch_dir $TEE_TTA_DIR/TTA_Crypto TTA_Crypto.patch
+	patch_dir $TEE_TTA_DIR/TTA_DS TTA_DS.patch
+	patch_dir $TEE_DIR xtest-user-tasks.generated.mk.patch
+}
+
+generate_tta_readme()
+{
+	echo "All files in this directory are generated using the make xtest command from buildroot directory in the process of building the REE side." > $TEE_XTEST_DIR/README
+	echo "All changes made directly to these files will be overwriten by the next make xtest-rebuild command." >> $TEE_XTEST_DIR/README
+	echo "You can delete this directory manually, or by using make xtest-clean command from the buildroot directory." >> $TEE_XTEST_DIR/README
+	echo "For more information, please refer to ree/package/mips-tee-test/xtest/README file." >> $TEE_XTEST_DIR/README
+}
+
+generate_tee_xtest
+generate_tta_readme

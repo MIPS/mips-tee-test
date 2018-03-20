@@ -1,0 +1,5 @@
+config BR2_PACKAGE_TEST_STARTER_CA
+	bool "test_starter_ca"
+	depends on BR2_PACKAGE_LIBTEEC
+	help
+	  Test starter client application.

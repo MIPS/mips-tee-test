@@ -1,0 +1,18 @@
+--- xtest-1.0/xtest_70000.c	2017-05-31 15:34:19.940395589 +0200
++++ xtest-1.0/xtest_70000_v1.c	2017-05-31 15:37:24.144396285 +0200
+@@ -312,7 +312,7 @@
+     XML_InitializeContext(c, _device, CONTEXT01, TEEC_SUCCESS);
+     XML_OpenSession(c, CONTEXT01, SESSION01, &UUID_TTA_testingClientAPI, TEEC_LOGIN_PUBLIC, NULL, NULL, NULL, TEEC_SUCCESS);
+     OPERATION_TEEC_PARAM_TYPES(OPERATION01, TEEC_NONE, TEEC_NONE, TEEC_NONE, TEEC_NONE);
+-    XML_InvokeCommand(c, SESSION01, COMMAND_TTA_To_Be_Cancelled, OPERATION01, TEEC_ERROR_CANCEL);
++    XML_InvokeCommand(c, SESSION01, COMMAND_TTA_To_Be_Cancelled, OPERATION01, NULL, TEEC_ERROR_CANCEL);
+     TEEC_SelectApp(CLIENT_APP01, THREAD02);
+     RequestCancellation(OPERATION01);
+     TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
+@@ -41256,4 +41256,4 @@
+                  /* Requirement IDs */
+                  "OPEN_SESSION_OPERATION_PAYLOAD",
+                  /* How to implement */
+-                 "Description of how to implement ...");
+\ No newline at end of file
++                 "Description of how to implement ...");

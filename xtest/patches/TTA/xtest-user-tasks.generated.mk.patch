@@ -1,0 +1,40 @@
+--- app/xtest/xtest-user-tasks.generated.mk	1969-12-31 16:00:00.000000000 -0800
++++ app/xtest/patches/xtest-user-tasks.template.mk	2017-01-12 14:00:00.000000000 -0800
+@@ -0,0 +1,36 @@
++#
++# Copyright (c) 2017-218, MIPS Tech, LLC and/or its affiliated group companies (“MIPS”).
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++
++# This is a generated file, do not edit directly
++
++TRUSTY_ALL_USER_TASKS += \
++	xtest/TTAs_Internal_API_1_1_1/TTA_ClientAPI/TTA_answerErrorTo_Invoke \
++	xtest/TTAs_Internal_API_1_1_1/TTA_ClientAPI/TTA_answerErrorTo_OpenSession \
++	xtest/TTAs_Internal_API_1_1_1/TTA_ClientAPI/TTA_answerSuccessTo_OpenSession_Invoke \
++	xtest/TTAs_Internal_API_1_1_1/TTA_ClientAPI/TTA_testingClientAPI \
++	xtest/TTAs_Internal_API_1_1_1/TTA_ClientAPI/TTA_testingClientAPI_Parameters/TTA_testingClientAPI_Parameters_Invoke \
++	xtest/TTAs_Internal_API_1_1_1/TTA_ClientAPI/TTA_testingClientAPI_Parameters/TTA_testingClientAPI_Parameters_OpenSession \
++	xtest/TTAs_Internal_API_1_1_1/TTA_TCF/TTA_TCF \
++	xtest/TTAs_Internal_API_1_1_1/TTA_TCF/TTA_TCF_ICA \
++	xtest/TTAs_Internal_API_1_1_1/TTA_TCF/TTA_TCF_ICA2 \
++	xtest/TTAs_Internal_API_1_1_1/TTA_TCF/TTA_TCF_MultipleInstanceTA \
++	xtest/TTAs_Internal_API_1_1_1/TTA_TCF/TTA_TCF_PanicAtCloseSession \
++	xtest/TTAs_Internal_API_1_1_1/TTA_TCF/TTA_TCF_PanicAtCreation \
++	xtest/TTAs_Internal_API_1_1_1/TTA_TCF/TTA_TCF_SingleInstanceTA \
++	xtest/TTAs_Internal_API_1_1_1/TTA_Time/TTA_Time \
++	xtest/TTAs_Internal_API_1_1_1/TTA_Arithmetical/TTA_Arithmetical \
++	xtest/TTAs_Internal_API_1_1_1/TTA_Crypto/TTA_Crypto \
++	xtest/TTAs_Internal_API_1_1_1/TTA_DS/TTA_DS \
++

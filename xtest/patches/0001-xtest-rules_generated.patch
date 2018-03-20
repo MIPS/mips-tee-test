@@ -1,0 +1,35 @@
+--- /dev/null	2017-05-03 08:51:39.366239025 +0200
++++ xtest-1.0/rules_xtest.generated.mk	2017-05-31 13:04:59.844361757 +0200
+@@ -0,0 +1,32 @@
++#
++# Copyright (c) 2017-218, MIPS Tech, LLC and/or its affiliated group companies (“MIPS”).
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++
++# This is a generated file, do not edit directly
++
++#LOCAL_DIR := $(GET_LOCAL_DIR)
++
++CFLAGS += \
++	-DWITH_GP_TESTS \
++	-DWITH_EXTRA_PROPERTY_TESTS \
++	-DWITH_ARITHMETIC_API \
++
++SRCS += \
++	xtest_70000.c \
++	xtest_75000.c \
++	xtest_80000.c \
++	xtest_85000.c \
++	xtest_90000.c \
++

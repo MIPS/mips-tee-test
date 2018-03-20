@@ -1,0 +1,59 @@
+diff -ruN TEE_include/rules.mk TEE_include_pp/rules.mk
+--- TEE_include/rules.mk	1970-01-01 01:00:00.000000000 +0100
++++ TEE_include_pp/rules.mk	2016-12-20 16:05:58.635914215 +0100
+@@ -0,0 +1,23 @@
++#
++# Copyright (c) 2016-218, MIPS Tech, LLC and/or its affiliated group companies (“MIPS”).
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++
++LOCAL_DIR := $(GET_LOCAL_DIR)
++
++GLOBAL_INCLUDES += $(LOCAL_DIR)
++
++MODULE := $(LOCAL_DIR)
++
++#include make/module.mk
+diff -ruN TEE_include/tee_trace.h TEE_include_pp/tee_trace.h
+--- TEE_include/tee_trace.h	1970-01-01 01:00:00.000000000 +0100
++++ TEE_include_pp/tee_trace.h	2016-12-20 16:05:58.635914215 +0100
+@@ -0,0 +1,28 @@
++/*
++ * Copyright (c) 2016-218, MIPS Tech, LLC and/or its affiliated group companies (“MIPS”).
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#define DEBUG_XTEST 0
++#if DEBUG_XTEST
++#define SLogTrace(fmt, ...)   do {printf(fmt "\n", ## __VA_ARGS__);} while(false)
++#define SLogWarning(fmt, ...) do {printf(fmt "\n", ## __VA_ARGS__);} while(false)
++#define SLogError(fmt, ...)   do {printf(fmt "\n", ## __VA_ARGS__);} while(false)
++#else
++#define SLogTrace(...)   do {} while(false)
++#define SLogWarning(...) do {} while(false)
++#define SLogError(...)   do {} while(false)
++#endif
++
++#define S_VAR_NOT_USED(variable) do{(void)(variable);}while(0);

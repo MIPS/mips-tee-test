@@ -1,0 +1,197 @@
+diff -ruN xtest-1.0/adbg_case_declare.h xtest-1.0_v1/adbg_case_declare.h
+--- xtest-1.0/adbg_case_declare.h	2017-05-31 15:59:27.640401282 +0200
++++ xtest-1.0_v1/adbg_case_declare.h	2017-05-31 16:00:21.024401484 +0200
+@@ -1215,6 +1215,12 @@
+ ADBG_CASE_DECLARE(XTEST_TEE_80068);\
+ ADBG_CASE_DECLARE(XTEST_TEE_80069);\
+ ADBG_CASE_DECLARE(XTEST_TEE_80070);\
++ADBG_CASE_DECLARE(XTEST_TEE_80700);\
++ADBG_CASE_DECLARE(XTEST_TEE_80701);\
++ADBG_CASE_DECLARE(XTEST_TEE_80702);\
++ADBG_CASE_DECLARE(XTEST_TEE_80703);\
++ADBG_CASE_DECLARE(XTEST_TEE_80704);\
++ADBG_CASE_DECLARE(XTEST_TEE_80705);\
+ \
+ ADBG_CASE_DECLARE(XTEST_TEE_85176);\
+ ADBG_CASE_DECLARE(XTEST_TEE_85177);\
+diff -ruN xtest-1.0/adbg_entry_declare.h xtest-1.0_v1/adbg_entry_declare.h
+--- xtest-1.0/adbg_entry_declare.h	2017-05-31 15:59:28.392401285 +0200
++++ xtest-1.0_v1/adbg_entry_declare.h	2017-05-31 16:02:10.684401898 +0200
+@@ -1217,6 +1217,12 @@
+     ADBG_SUITE_ENTRY(XTEST_TEE_80068, Disable_TEE_Internal_API_TrustedCore_or_NULL)\
+     ADBG_SUITE_ENTRY(XTEST_TEE_80069, Disable_TEE_Internal_API_TrustedCore_or_NULL)\
+     ADBG_SUITE_ENTRY(XTEST_TEE_80070, Disable_TEE_Internal_API_TrustedCore_or_NULL)\
++    ADBG_SUITE_ENTRY(XTEST_TEE_80700, Disable_TEE_Internal_API_TrustedCore_or_NULL)\
++    ADBG_SUITE_ENTRY(XTEST_TEE_80701, Disable_TEE_Internal_API_TrustedCore_or_NULL)\
++    ADBG_SUITE_ENTRY(XTEST_TEE_80702, Disable_TEE_Internal_API_TrustedCore_or_NULL)\
++    ADBG_SUITE_ENTRY(XTEST_TEE_80703, Disable_TEE_Internal_API_TrustedCore_or_NULL)\
++    ADBG_SUITE_ENTRY(XTEST_TEE_80704, Disable_TEE_Internal_API_TrustedCore_or_NULL)\
++    ADBG_SUITE_ENTRY(XTEST_TEE_80705, Disable_TEE_Internal_API_TrustedCore_or_NULL)\
+ \
+     ADBG_SUITE_ENTRY(XTEST_TEE_85176, Disable_TEE_Internal_API_Time_Arithm_or_NULL)\
+     ADBG_SUITE_ENTRY(XTEST_TEE_85177, Disable_TEE_Internal_API_Time_Arithm_or_NULL)\
+diff -ruN xtest-1.0/xtest_80000.c xtest-1.0_v1/xtest_80000.c
+--- xtest-1.0/xtest_80000.c	2017-05-31 15:59:30.208401292 +0200
++++ xtest-1.0_v1/xtest_80000.c	2017-05-31 16:02:51.268402051 +0200
+@@ -1302,6 +1302,96 @@
+     xtest_tee_deinit();
+ }
+ 
++static void xtest_tee_80700(ADBG_Case_t *c)
++{
++    if (!ADBG_EXPECT_TRUE(c, xtest_tee_init(c)))
++        return ;
++    TEEC_SetUp_TEE();
++    TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
++    XML_InitializeContext(c, _device, CONTEXT01, TEEC_SUCCESS);
++    XML_OpenSession(c, CONTEXT01, SESSION01, &UUID_TTA_testingInternalAPI_TrustedCoreFramework, TEEC_LOGIN_PUBLIC, NULL, NULL, NULL, TEEC_SUCCESS);
++    ADBG_EXPECT(c, TEE_ERROR_TARGET_DEAD, Invoke_GetPropertyAsBool_withoutEnum(c, SESSION01, CMD_TEE_GetPropertyAsBool_withoutEnum, TEE_PROPSET_CURRENT_TA, NULL, NORMAL_SIZE_BUFFER, VALUE_PREDEFINED_BOOLEAN));
++    TEEC_CloseSession(SESSION01);
++    TEEC_FinalizeContext(CONTEXT01);
++    TEEC_TearDown_TEE(INITIAL_STATE);
++
++}
++
++static void xtest_tee_80701(ADBG_Case_t *c)
++{
++    if (!ADBG_EXPECT_TRUE(c, xtest_tee_init(c)))
++        return ;
++    TEEC_SetUp_TEE();
++    TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
++    XML_InitializeContext(c, _device, CONTEXT01, TEEC_SUCCESS);
++    XML_OpenSession(c, CONTEXT01, SESSION01, &UUID_TTA_testingInternalAPI_TrustedCoreFramework, TEEC_LOGIN_PUBLIC, NULL, NULL, NULL, TEEC_SUCCESS);
++    ADBG_EXPECT(c, TEE_ERROR_ITEM_NOT_FOUND, Invoke_GetPropertyAsBool_withoutEnum(c, SESSION01, CMD_TEE_GetPropertyAsBool_withoutEnum, TEE_PROPSET_CURRENT_TA, GPD_CLIENT_identity, NORMAL_SIZE_BUFFER, VALUE_PREDEFINED_BOOLEAN));
++    TEEC_CloseSession(SESSION01);
++    TEEC_FinalizeContext(CONTEXT01);
++    TEEC_TearDown_TEE(INITIAL_STATE);
++
++}
++
++static void xtest_tee_80702(ADBG_Case_t *c)
++{
++    if (!ADBG_EXPECT_TRUE(c, xtest_tee_init(c)))
++        return ;
++    TEEC_SetUp_TEE();
++    TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
++    XML_InitializeContext(c, _device, CONTEXT01, TEEC_SUCCESS);
++    XML_OpenSession(c, CONTEXT01, SESSION01, &UUID_TTA_testingInternalAPI_TrustedCoreFramework, TEEC_LOGIN_PUBLIC, NULL, NULL, NULL, TEEC_SUCCESS);
++    ADBG_EXPECT(c, TEE_ERROR_TARGET_DEAD, Invoke_GetPropertyAsXXXX_fromEnum(c, SESSION01, CMD_TEE_GetPropertyAsXXXX_fromEnum, ENUMERATOR1, TEE_PROPSET_CURRENT_CLIENT));
++    TEEC_CloseSession(SESSION01);
++    TEEC_FinalizeContext(CONTEXT01);
++    TEEC_TearDown_TEE(INITIAL_STATE);
++
++}
++
++static void xtest_tee_80703(ADBG_Case_t *c)
++{
++    if (!ADBG_EXPECT_TRUE(c, xtest_tee_init(c)))
++        return ;
++    TEEC_SetUp_TEE();
++    TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
++    XML_InitializeContext(c, _device, CONTEXT01, TEEC_SUCCESS);
++    XML_OpenSession(c, CONTEXT01, SESSION01, &UUID_TTA_testingInternalAPI_TrustedCoreFramework, TEEC_LOGIN_PUBLIC, NULL, NULL, NULL, TEEC_SUCCESS);
++    ADBG_EXPECT(c, TEE_ERROR_TARGET_DEAD, Invoke_ResetPropertyEnumerator(c, SESSION01, CMD_TEE_ResetPropertyEnumerator, ENUMERATOR1));
++    TEEC_CloseSession(SESSION01);
++    TEEC_FinalizeContext(CONTEXT01);
++    TEEC_TearDown_TEE(INITIAL_STATE);
++
++}
++
++static void xtest_tee_80704(ADBG_Case_t *c)
++{
++    if (!ADBG_EXPECT_TRUE(c, xtest_tee_init(c)))
++        return ;
++    TEEC_SetUp_TEE();
++    TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
++    XML_InitializeContext(c, _device, CONTEXT01, TEEC_SUCCESS);
++    XML_OpenSession(c, CONTEXT01, SESSION01, &UUID_TTA_testingInternalAPI_TrustedCoreFramework, TEEC_LOGIN_PUBLIC, NULL, NULL, NULL, TEEC_SUCCESS);
++    ADBG_EXPECT(c, TEE_ERROR_TARGET_DEAD, Invoke_GetPropertyAsXXXX_fromEnum(c, SESSION01, CMD_TEE_GetPropertyAsXXXX_fromEnum, ENUMERATOR1, 0));
++    TEEC_CloseSession(SESSION01);
++    TEEC_FinalizeContext(CONTEXT01);
++    TEEC_TearDown_TEE(INITIAL_STATE);
++
++}
++
++static void xtest_tee_80705(ADBG_Case_t *c)
++{
++    if (!ADBG_EXPECT_TRUE(c, xtest_tee_init(c)))
++        return ;
++    TEEC_SetUp_TEE();
++    TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
++    XML_InitializeContext(c, _device, CONTEXT01, TEEC_SUCCESS);
++    XML_OpenSession(c, CONTEXT01, SESSION01, &UUID_TTA_testingInternalAPI_TrustedCoreFramework, TEEC_LOGIN_PUBLIC, NULL, NULL, NULL, TEEC_SUCCESS);
++    ADBG_EXPECT(c, TEE_ERROR_TARGET_DEAD, Invoke_StartPropertyEnumerator(c, SESSION01, CMD_TEE_StartPropertyEnumerator, ENUMERATOR1, 0));
++    TEEC_CloseSession(SESSION01);
++    TEEC_FinalizeContext(CONTEXT01);
++    TEEC_TearDown_TEE(INITIAL_STATE);
++
++}
++
+ ADBG_CASE_DEFINE(XTEST_TEE_80001, xtest_tee_80001,
+                  /* Title */
+                  "a7-86-cd",
+@@ -1931,4 +2021,62 @@
+                  /* Requirement IDs */
+                  "TA_INVOKE_ERROR_TARGET_DEAD",
+                  /* How to implement */
+-                 "Description of how to implement ...");
+\ No newline at end of file
++                 "Description of how to implement ...");
++ADBG_CASE_DEFINE(XTEST_TEE_80700, xtest_tee_80700,
++                 /* Title */
++                 "Invoke_GetPropertyAsBool_withoutEnum_null",
++                 /* Short description */
++                 "Test passing a null pointer instead of a name to property access function",
++                 /* Requirement IDs */
++                 "OPEN_SESSION_ENTRY_POINT_SUCCESS",
++                 /* How to implement */
++                 "Description of how to implement ...");
++ADBG_CASE_DEFINE(XTEST_TEE_80701, xtest_tee_80701,
++                 /* Title */
++                 "Invoke_GetPropertyAsBool_withoutEnum_wrong_type",
++                 /* Short description */
++                 "Test passing a wrong property type to a property access function",
++                 /* Requirement IDs */
++                 "OPEN_SESSION_ENTRY_POINT_SUCCESS",
++                 /* How to implement */
++                 "Description of how to implement ...");
++ADBG_CASE_DEFINE(XTEST_TEE_80702, xtest_tee_80702,
++                 /* Title */
++                 "Get_poperty_as_xxx_enum_not_allocated",
++                 /* Short description */
++                 "Test trying to get property from enumerator in case where enumerator"
++                 "is not allocated",
++                 /* Requirement IDs */
++                 "OPEN_SESSION_ENTRY_POINT_SUCCESS",
++                 /* How to implement */
++                 "Description of how to implement ...");
++ADBG_CASE_DEFINE(XTEST_TEE_80703, xtest_tee_80703,
++                 /* Title */
++                 "Reset_enum_not_allocated",
++                 /* Short description */
++                 "Test trying to reset enumerator in case where enumerator"
++                 "is not allocated",
++                 /* Requirement IDs */
++                 "OPEN_SESSION_ENTRY_POINT_SUCCESS",
++                 /* How to implement */
++                 "Description of how to implement ...");
++ADBG_CASE_DEFINE(XTEST_TEE_80704, xtest_tee_80704,
++                 /* Title */
++                 "Get_poperty_as_xxx_enum_bad_propset",
++                 /* Short description */
++                 "Test trying to access property using enumerator with erroneous"
++                 " property set ID",
++                 /* Requirement IDs */
++                 "OPEN_SESSION_ENTRY_POINT_SUCCESS",
++                 /* How to implement */
++                 "Description of how to implement ...");
++ADBG_CASE_DEFINE(XTEST_TEE_80705, xtest_tee_80705,
++                 /* Title */
++                 "Start_enum_bad_propset",
++                 /* Short description */
++                 "Test trying to start enumerator with erroneous"
++                 " property set ID",
++                 /* Requirement IDs */
++                 "OPEN_SESSION_ENTRY_POINT_SUCCESS",
++                 /* How to implement */
++                 "Description of how to implement ...");

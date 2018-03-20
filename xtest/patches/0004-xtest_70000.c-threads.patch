@@ -1,0 +1,34 @@
+--- xtest-1.0/xtest_70000.c	2017-09-26 17:16:33.005135031 +0200
++++ xtest-1.0/xtest_70000_v1.c	2017-09-27 10:58:01.722222275 +0200
+@@ -319,14 +319,14 @@
+     if (!ADBG_EXPECT_TRUE(c, xtest_tee_init(c)))
+         return ;
+     TEEC_SetUp_TEE();
+-    TEEC_createThread(CLIENT_APP01, THREAD02);
++    TEEC_createThread(THREAD02, XML_cancellation_thread, OPERATION01);
+     TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
+     XML_InitializeContext(c, _device, CONTEXT01, TEEC_SUCCESS);
+     XML_OpenSession(c, CONTEXT01, SESSION01, &UUID_TTA_testingClientAPI, TEEC_LOGIN_PUBLIC, NULL, NULL, NULL, TEEC_SUCCESS);
+     OPERATION_TEEC_PARAM_TYPES(OPERATION01, TEEC_NONE, TEEC_NONE, TEEC_NONE, TEEC_NONE);
+     XML_InvokeCommand(c, SESSION01, COMMAND_TTA_To_Be_Cancelled, OPERATION01, NULL, TEEC_ERROR_CANCEL);
+     TEEC_SelectApp(CLIENT_APP01, THREAD02);
+-    RequestCancellation(OPERATION01);
++    RequestCancellation(THREAD02);
+     TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
+     TEEC_CloseSession(SESSION01);
+     TEEC_FinalizeContext(CONTEXT01);
+@@ -435,12 +435,11 @@
+     if (!ADBG_EXPECT_TRUE(c, xtest_tee_init(c)))
+         return ;
+     TEEC_SetUp_TEE();
+-    TEEC_createThread(CLIENT_APP01, THREAD02);
++    TEEC_createThread(THREAD02, XML_context_thread, CONTEXT02);
+     TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
+     XML_InitializeContext(c, _device, CONTEXT01, TEEC_SUCCESS);
+     TEEC_SelectApp(CLIENT_APP01, THREAD02);
+-    XML_InitializeContext(c, _device, CONTEXT02, TEEC_SUCCESS);
+-    TEEC_FinalizeContext(CONTEXT02);
++    RequestCancellation(THREAD02);
+     TEEC_SelectApp(CLIENT_APP01, THREAD01_DEFAULT);
+     TEEC_FinalizeContext(CONTEXT01);
+     TEEC_TearDown_TEE(INITIAL_STATE);

@@ -1,0 +1,14 @@
+config BR2_PACKAGE_XTEST
+	bool "xtest"
+	depends on BR2_PACKAGE_LIBTEEC
+	help
+	  Test suite for testing the GlobalPlatform Client API.
+
+if BR2_PACKAGE_XTEST
+
+config BR2_PACKAGE_XTEST_GP
+	bool "xtest_gp"
+	help
+	  Extends the xtest suite with GlobalPlatform tests.
+
+endif

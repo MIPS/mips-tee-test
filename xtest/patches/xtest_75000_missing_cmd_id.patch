@@ -1,0 +1,18 @@
+--- xtest-1.0/xtest_75000.c	2017-11-21 11:23:58.302839489 +0100
++++ xtest-1.0/xtest_75000.c_patched	2017-11-21 11:25:04.358840921 +0100
+@@ -3266,7 +3266,7 @@
+     ADBG_EXPECT(c, TEE_SUCCESS, Invoke_CreatePersistentObject(c, SESSION01, CMD_DS_CreatePersistentObject, TEE_STORAGE_PRIVATE, OBJECT_ID_02, iObjectDataFlags1, NULL, EMPTY_BUFFER, SIZE_0, OBJECT_HANDLE_02));
+     ADBG_EXPECT(c, TEE_SUCCESS, Invoke_CreatePersistentObject(c, SESSION01, CMD_DS_CreatePersistentObject, TEE_STORAGE_PRIVATE, OBJECT_ID_03, iObjectDataFlags1, NULL, EMPTY_BUFFER, SIZE_0, OBJECT_HANDLE_03));
+     ADBG_EXPECT(c, TEE_SUCCESS, Invoke_StartPersistentObjectEnumerator(c, SESSION01, CMD_DS_StartPersistentObjectEnumerator, OBJECT_ENUM_01, TEE_STORAGE_PRIVATE));
+-    ADBG_EXPECT(c, TEE_SUCCESS, Invoke_GetNextPersistentObject_All(c, SESSION01, OBJECT_ENUM_01, OBJECT_INFO_01, 3));
++    ADBG_EXPECT(c, TEE_SUCCESS, Invoke_GetNextPersistentObject_All(c, SESSION01, CMD_DS_GetNextPersistentObject, OBJECT_ENUM_01, OBJECT_INFO_01, 3));
+     Check_EnumeratedPersistentObject(c, OBJECT_ID_01, TEE_TYPE_DATA, SIZE_ZERO, SIZE_ZERO, iObjectUsageUnknown, SIZE_0, iHandleFlags1, iObjectDataFlags1);
+     Check_EnumeratedPersistentObject(c, OBJECT_ID_02, TEE_TYPE_DATA, SIZE_ZERO, SIZE_ZERO, iObjectUsageUnknown, SIZE_0, iHandleFlags1, iObjectDataFlags1);
+     Check_EnumeratedPersistentObject(c, OBJECT_ID_03, TEE_TYPE_DATA, SIZE_ZERO, SIZE_ZERO, iObjectUsageUnknown, SIZE_0, iHandleFlags1, iObjectDataFlags1);
+@@ -13362,4 +13362,4 @@
+                  /* Requirement IDs */
+                  "WRITE_OBJECT_DATA_ERROR_OVERFLOW",
+                  /* How to implement */
+-                 "Description of how to implement ...");
+\ No newline at end of file
++                 "Description of how to implement ...");

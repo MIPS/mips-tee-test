@@ -1,0 +1,99 @@
+diff -ruN ./TTA_answerSuccessTo_OpenSession_Invoke/code_files/manifest.c ./TTA_answerSuccessTo_OpenSession_Invoke_patched/code_files/manifest.c
+--- ./TTA_answerSuccessTo_OpenSession_Invoke/code_files/manifest.c	1970-01-01 01:00:00.000000000 +0100
++++ ./TTA_answerSuccessTo_OpenSession_Invoke_patched/code_files/manifest.c	2017-11-07 18:00:23.196290089 +0100
+@@ -0,0 +1,50 @@
++/*
++ * Copyright (c) 2016-218, MIPS Tech, LLC and/or its affiliated group companies (“MIPS”).
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include <trusty_app_manifest.h>
++#include <stddef.h>
++#include <tee_api_properties.h>
++#include <tee_api_types.h>
++
++#define TTA_ANSWERSUCCESSTOOPENSESSIONINVOKE_UUID { 0x534D4152, 0x542D, 0x4353, \
++    { 0x4C, 0x54, 0x2D, 0x54, 0x41, 0x2D, 0x53, 0x55 }}
++
++tee_api_properties_t TEE_API_PROP_ATTRS tee_api_properties =
++{
++    { "gpd.ta.description", TA_PROP_TYPE_STR, "tta_answer_success_to_opensession_invoke_ta"},
++    { "gpd.ta.singleInstance", TA_PROP_TYPE_BOOL, &(const bool){1}},
++    { "gpd.ta.multiSession", TA_PROP_TYPE_BOOL, &(const bool){0}},
++    { "gpd.ta.instanceKeepAlive", TA_PROP_TYPE_BOOL, &(const bool){0}},
++};
++
++static const size_t ta_props_len = sizeof(tee_api_properties) / sizeof(tee_api_properties[0]);
++
++trusty_app_manifest_t TRUSTY_APP_MANIFEST_ATTRS trusty_app_manifest =
++{
++    TTA_ANSWERSUCCESSTOOPENSESSIONINVOKE_UUID,
++
++    /* optional configuration options here */
++    {
++        TRUSTY_APP_CONFIG_MIN_HEAP_SIZE(32 * 1024),
++        TRUSTY_APP_CONFIG_MIN_STACK_SIZE(1 * 1024),
++
++        /* enable/disable auto start */
++        TRUSTY_APP_CONFIG_AUTO_START(0),
++
++        /* custom external config options */
++        TRUSTY_APP_CONFIG_EXTERN((uint32_t)&tee_api_properties, (uint32_t)&ta_props_len),
++    },
++};
+diff -ruN ./TTA_answerSuccessTo_OpenSession_Invoke/rules.mk ./TTA_answerSuccessTo_OpenSession_Invoke_patched/rules.mk
+--- ./TTA_answerSuccessTo_OpenSession_Invoke/rules.mk	1970-01-01 01:00:00.000000000 +0100
++++ ./TTA_answerSuccessTo_OpenSession_Invoke_patched/rules.mk	2017-11-07 18:00:23.196290089 +0100
+@@ -0,0 +1,30 @@
++#
++# Copyright (c) 2016-218, MIPS Tech, LLC and/or its affiliated group companies (“MIPS”).
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++
++LOCAL_DIR := $(GET_LOCAL_DIR)
++
++MODULE := $(LOCAL_DIR)
++
++MODULE_SRCS += \
++	$(LOCAL_DIR)/code_files/manifest.c \
++	$(LOCAL_DIR)/code_files/TTA_answerSuccessTo_OpenSession_Invoke.c \
++
++MODULE_DEPS += \
++	app/trusty \
++	lib/libc-trusty \
++	lib/libutee \
++	xtest/TTAs_Internal_API_1_1_1/TEE_include \
++
++include make/module.mk
+diff -ruN ./TTA_answerSuccessTo_OpenSession_Invoke/code_files/TTA_answerSuccessTo_OpenSession_Invoke.c ./TTA_answerSuccessTo_OpenSession_Invoke_patched/code_files/TTA_answerSuccessTo_OpenSession_Invoke.c
+--- ./TTA_answerSuccessTo_OpenSession_Invoke/code_files/TTA_answerSuccessTo_OpenSession_Invoke.c	2015-09-04 10:41:34.000000000 +0200
++++ ./TTA_answerSuccessTo_OpenSession_Invoke_patched/code_files/TTA_answerSuccessTo_OpenSession_Invoke.c	2018-02-27 12:50:34.492557798 +0100
+@@ -21,6 +21,7 @@
+  *   Includes
+  * ---------------------------------------------------------------------------- */
+ #include "tee_internal_api.h"
++#include "tee_trace.h"
+ #include "TTA_answerSuccessTo_OpenSession_Invoke_protocol.h"
+ 
+ 

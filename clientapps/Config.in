@@ -1,0 +1,1 @@
+source "$BR2_EXTERNAL_MIPS_REE_PATH/package/mips-tee-test/clientapps/test_starter_ca/Config.in"
